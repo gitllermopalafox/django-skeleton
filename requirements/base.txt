@@ -1,0 +1,4 @@
+Django==1.7.2
+Unipath==1.0
+bpython==0.13.1
+wsgiref==0.1.2

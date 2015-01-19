@@ -1,0 +1,50 @@
+#! /bin/bash
+
+DJPROJECT="new_project"
+SETTINGS="$DJPROJECT.settings.dev"
+
+if [ $# -eq 0 ]; then
+	echo "1 - Correr servidor (0:8000)"
+	echo "2 - Correr servidor en otro puerto"
+	echo "3 - Ejecutar otro comando"
+	echo "4 - Ejecutar makemigrations"
+	echo "5 - Ejecutar syncdb"
+	echo "6 - Arrancar supervisor"
+	echo "7 - Reiniciar supervisor"
+	echo "8 - Detener supervisor"
+	read opc
+else
+	opc=$1
+fi
+
+case "$opc" in
+
+1 | "run")  python manage.py runserver 0.0.0.0:8000 --settings=$SETTINGS
+    ;;
+2 | "runp")  echo "Puerto: "
+    read puerto
+    python manage.py runserver 0:$puerto --settings=$SETTINGS
+    ;;
+3 | "cmd")
+    if [ $# -eq 0 ]; then
+        echo "Comando: "
+        read cmd
+        python manage.py $cmd --settings=$SETTINGS
+    else
+        python manage.py $2 --settings=$SETTINGS
+    fi
+    ;;
+4 | "mkm")  echo "-- Makemigrations --"
+    python manage.py makemigrations --settings=$SETTINGS
+    ;;
+5 | "syn")  echo "-- Syncdb --"
+    python manage.py syncdb --settings=$SETTINGS
+    ;;
+6 | "sup1") sudo supervisorctl start $DJPROJECT
+    ;;
+7 | "sup2") sudo supervisorctl restart $DJPROJECT
+    ;;
+8 | "sup3") sudo supervisorctl stop $DJPROJECT
+    ;;
+
+esac
